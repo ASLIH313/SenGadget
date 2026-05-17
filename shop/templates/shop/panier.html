@@ -1,0 +1,81 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <h2 class="section-title">Votre Panier</h2>
+
+    {% if panier.elementpanier_set.all %}
+        <table class="table mt-4 table-panier">
+            <thead>
+                <tr>
+                    <th>Produit</th>
+                    <th>Quantité</th>
+                    <th>Prix</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for element in panier.elementpanier_set.all %}
+                <tr>
+
+                    <td data-label="Produit">{{ element.produit.name }}</td>
+
+                    <td class="text-center" data-label="Quantité">
+                        <a href="{% url 'moins_quantite' element.id %}" class="btn btn-sm btn-outline-dark">-</a>
+                        <span class="mx-2">{{ element.quantite }}</span>
+                        <a href="{% url 'plus_quantite' element.id %}" class="btn btn-sm btn-outline-dark">+</a>
+                        <a href="{% url 'supprimer_element' element.id %}" class="btn btn-sm btn-danger ms-2">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
+
+
+                    <td data-label="Prix">{{ element.produit.price }} FCFA</td>
+
+
+                    <td data-label="Total">{{ element.sous_total }} FCFA</td>
+
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h4 class="text-end">
+            Total : {{ panier.total_panier }} FCFA
+        </h4>
+        
+        <!--Bouton valider la commande et retour a la page -->
+        
+
+        <div class="d-flex justify-content-between align-items-center mt-4 gap-2 boutons-panier">
+    
+            <a href="{% url 'home' %}" class="btn btn-outline-success w-50">
+                <i class="fas fa-arrow-left me-2"></i> Retourner vers le catalogue
+            </a>
+
+            <a href="{% url 'page_commande' %}" class="btn btn-success w-50">
+                Valider ma commande
+            </a>
+
+        </div>
+
+
+
+
+    {% else %}
+        <p class="text-center mt-5">Votre panier est vide 🛒</p>
+        
+        <div class="text-center">
+            <a href="{% url 'home' %}" class="btn btn-success" >
+                <i class="fas fa-arrow-left me-2"></i> Retourner vers le catalogue
+            </a>
+        </div>
+
+        
+    {% endif %}
+</div>
+
+{% endblock %}
+
+

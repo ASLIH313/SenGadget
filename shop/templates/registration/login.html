@@ -1,0 +1,89 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <style>
+        .auth-container {
+            max-width: 450px;
+            margin: 60px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .auth-container h2 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .auth-container input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .auth-container button {
+            width: 100%;
+            padding: 12px;
+            background: #0c5a2cd0;
+            border: none;
+            color: white;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .auth-container button:hover {
+            background: #0c5a2cd0;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 15px;
+        }
+    </style>
+
+
+    <div class="auth-container">
+        <h2>Connexion</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <label>Email</label>
+            {{ form.username }}
+            {% if form.username.errors %}
+                <div class="text-danger small">{{ form.username.errors }}</div>
+            {% endif %}
+
+            <label>Mot de passe</label>
+            {{ form.password }}
+            {% if form.password.errors %}
+                <div class="text-danger small">{{ form.password.errors }}</div>
+            {% endif %}
+
+            <button type="submit">Se connecter</button>
+        </form>
+
+        <div class="auth-footer">
+            <a href="{% url 'password_reset_custom' %}">
+                Mot de passe oublié ?
+            </a>
+            <p>Pas de compte ? 
+                <a href="{% url 'signup' %}">Créer un compte</a>
+            </p>
+        </div>
+
+    </div>
+
+{% endblock %}

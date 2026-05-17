@@ -1,0 +1,153 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="row align-items-center g-5">
+
+            <!-- IMAGE PRODUIT -->
+            <div class="col-md-6 text-center">
+                <div class="detail-img-wrapper">
+                    <img src="{{ produit.image.url }}" class="detail-img zoomable" onclick="openImage(this.src)">
+
+                </div>
+            </div>
+
+
+            <!-- INFOS PRODUIT -->
+            <div class="col-md-6">
+
+                <h2 class="fw-bold">{{ produit.name }}</h2>
+
+                <div class="d-flex align-items-center mb-2">
+                    <div class="text-warning me-2">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= moyenne %}
+                                <i class="fas fa-star"></i>
+                            {% else %}
+                                <i class="far fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <span class="text-muted">({{ moyenne }}/5)</span>
+                </div>
+                 <b><p class="text-muted">Stock disponible : {{ produit.stock }}</p></b>
+
+                <p class="text-muted mt-3">
+                    {{ produit.description }}
+                </p>
+
+                <h3 class="text-success mt-4 fw-bold">
+                    🏷️{{ produit.price }} FCFA
+                </h3>
+
+                <!-- BOUTONS -->
+                <div class="d-flex gap-3 mt-4 flex-wrap">
+                    <a href="{% url 'home' %}" class="btn btn-outline-success btn-lg">
+                        <i class="fas fa-arrow-left me-2"></i> Catalogue
+                    </a>
+
+                    {% if produit.stock > 0 %}
+                        <a href="{% url 'ajouter_au_panier' produit.id %}" class="btn btn-success btn-lg ">
+                            🛒 Ajouter au panier
+                        </a>
+                    {% else %}
+                        <button class="btn btn-danger" disabled>Rupture de stock</button>
+                    {% endif %}
+
+                    <a href="https://wa.me/221762524296?text=Bonjour%20SenGadget,%20je%20veux%20commander%20:%20{{ produit.name }}%20-%20{{ produit.price }}%20FCFA"
+                        class="btn btn-success btn-lg mt-3 w-100" target="_blank" 
+                        style="border:none;color:white;border-radius:10px;">
+                        🟢 Commander sur WhatsApp
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+        <div class="w-100"></div>
+
+
+        <!-- AVIS CLIENTS -->
+        <div class="avis-section">
+            <div class="row">
+                {% for c in commentaires %}
+                <div class="col-md-4 mb-4 d-flex">
+                    <div class="card-product comment-card h-100 w-100 p-3">
+
+                        <h6 class="fw-bold">{{ c.nom }}</h6>
+
+                        <div class="stars text-warning mb-2">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= c.note %}
+                                    <i class="fas fa-star"></i>
+                                {% else %}
+                                    <i class="far fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+
+                        <p class="text-muted m-0">
+                            {{ c.commentaire }}
+                        </p>
+
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+
+        <hr class="my-5">
+
+        <h5>Laisser un avis sur ce produit</h5>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <input type="text" name="nom" class="form-control" placeholder="Votre nom" required>
+            </div>
+
+            <div class="mb-3">
+                <textarea name="commentaire" class="form-control" placeholder="Votre avis..." required></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label>Note :</label>
+                <select name="note" class="form-select">
+                    <option value="5">⭐⭐⭐⭐⭐</option>
+                    <option value="4">⭐⭐⭐⭐</option>
+                    <option value="3">⭐⭐⭐</option>
+                    <option value="2">⭐⭐</option>
+                    <option value="1">⭐</option>
+                </select>
+            </div>
+
+            <button class="btn btn-success">Envoyer mon avis</button>
+        </form>
+
+
+    </div>
+
+    <!-- LIGHTBOX IMAGE -->
+    <div id="imageModal" class="image-modal" onclick="closeImage()">
+        <img id="modalImg">
+    </div>
+
+    <!--Script pour zoomer sur l'image -->
+    <script>
+        function openImage(src){
+            const modal = document.getElementById("imageModal");
+            const img = document.getElementById("modalImg");
+            img.src = src;
+            modal.style.display = "flex";
+        }
+
+        function closeImage(){
+            document.getElementById("imageModal").style.display = "none";
+        }
+        </script>
+
+{% endblock %}
+

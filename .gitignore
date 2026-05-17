@@ -1,0 +1,32 @@
+# Variables d'environnement
+.env
+*.env
+
+# Base de données
+db.sqlite3
+
+# Fichiers uploadés
+media/
+
+# Statiques collectés
+staticfiles/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Environnements virtuels
+venv/
+env/
+.venv/
+
+# macOS
+.DS_Store
+
+# Archives
+*.zip
+
+# IDEs
+.vscode/
+.idea/

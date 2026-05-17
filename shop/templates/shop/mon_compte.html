@@ -1,0 +1,76 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+
+<div style="max-width: 900px; margin: auto; padding: 20px;">
+
+    <!-- Header client -->
+    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 25px;">
+        <h2 style="margin: 0;">
+            Bonjour 
+            {% if user.first_name %}
+                {{ user.first_name }}
+            {% else %}
+                {{ user.username }}
+            {% endif %}
+            👋
+        </h2>
+        <p style="color: gray; margin-top: 5px;">
+            Bienvenue dans votre espace personnel SenGadget.
+        </p>
+    </div>
+
+    <!-- Section commandes -->
+    <h3 style="margin-bottom: 20px;">📦 Mes commandes</h3>
+
+    {% for commande in commandes %}
+        <div style="
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 5px solid #0d6efd;
+        ">
+            <p>Date : {{ commande.date_commande|date:"d M Y" }}</p>
+            <p>
+                Statut : 
+                {% if commande.statut == "Livrée" %}
+                    <span style="color: green; font-weight: bold;">{{ commande.statut }}</span>
+                {% elif commande.statut == "En attente" %}
+                    <span style="color: orange; font-weight: bold;">{{ commande.statut }}</span>
+                {% else %}
+                    <span style="color: red; font-weight: bold;">{{ commande.statut }}</span>
+                {% endif %}
+            </p>
+            <p>Total : <strong>{{ commande.montant_total }} FCFA</strong></p>
+
+            <p><strong>Produits :</strong></p>
+              <ul>
+                  {% for element in commande.elementcommande_set.all %}
+                      <li>
+                          {{ element.produit.name }} × {{ element.quantite }}
+                      </li>
+                  {% endfor %}
+              </ul>
+
+
+        </div>
+    {% empty %}
+        <div style="text-align: center; padding: 40px; background: #f8f9fa; border-radius: 10px;">
+            <p style="color: gray;">Aucune commande pour le moment.</p>
+        </div>
+    {% endfor %}
+
+
+    <a href="https://wa.me/221762524296?text=Bonjour%20SenGadget,%20je%20veux%20avoir%20des%20informations%20par%20raport%20à%20ma%20commande%20:%20" 
+        target="_blank" class="btn btn-success btn-lg mt-3">
+      💬 Nous contacter sur WhatsApp
+    </a>
+    <br> <br>
+    <a href="{% url 'home' %}" class="btn btn-outline-success btn-lg">
+        <i class="fas fa-arrow-left me-2"></i> Voir nos produits
+    </a>
+</div>
+
+{% endblock %}

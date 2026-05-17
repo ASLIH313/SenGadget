@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Détail commande</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body class="bg-light">
+    
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-dark mb-3">
+        ← Retour au dashboard
+    </a>
+
+    <div class="container mt-5">
+
+        <h3 class="mb-4">🧾 Détail de la commande</h3>
+
+        <div class="card p-4 shadow mb-4">
+            <h5>Informations client</h5>
+            <p><strong>Nom :</strong> {{ commande.nom_complet }}</p>
+            <p><strong>Téléphone :</strong> {{ commande.telephone }}</p>
+            <p><strong>Adresse :</strong> {{ commande.adresse }}</p>
+            <p><strong>Date :</strong> {{ commande.date_commande|date:"d/m/Y H:i" }}</p>
+            <p><strong>Statut :</strong> {{ commande.statut }}</p>
+        </div>
+
+        <div class="card p-4 shadow">
+            <h5>Produits commandés</h5>
+
+            <table class="table table-bordered text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Produit</th>
+                        <th>Quantité</th>
+                        <th>Prix</th>
+                        <th>Sous-total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for e in elements %}
+                    <tr>
+                        <td>{{ e.produit.name }}</td>
+                        <td>{{ e.quantite }}</td>
+                        <td>{{ e.prix }} FCFA</td>
+                        <td>{{ e.sous_total }} FCFA</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <h4 class="text-end mt-3">Total : {{ total }} FCFA</h4>
+        </div>
+
+    </div>
+
+    </body>
+</html>

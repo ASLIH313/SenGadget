@@ -1,0 +1,50 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="section-title text-center">Mentions légales</h2>
+    <br>
+                
+    <div class="mt-4" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif , Times, serif;">
+        <b>Éditeur du site</b>
+        <p>Le site <b>SenGadget</b> est édité par :
+        <br>SenGadget – Boutique en ligne d’accessoires et gadgets technologiques.</p>
+
+        <br><p>
+            <b>Responsable de publication :</b>  SenGadget
+            <br><b>Contact :</b> sengadget.sn@gmail.com
+            <br><b>Téléphone :</b> +221 76 252 42 96
+        </p>
+        <br>
+        <b>Propriété intellectuelle</b>
+        <p>
+            Tous les contenus présents sur le site SenGadget (textes, images, logos, design, graphismes) sont la propriété exclusive de SenGadget.
+            Toute reproduction, modification ou utilisation sans autorisation est strictement interdite.
+        </p>
+
+        <br>
+        <b>Produits et services</b>
+        <p>
+            SenGadget s’efforce de fournir des descriptions aussi précises que possible.
+            Toutefois, de légères variations peuvent exister entre les images et les produits livrés.
+        </p>
+
+        <br>
+        <b>Responsabilité</b>
+        <p>
+            SenGadget ne peut être tenu responsable des dommages liés à l’utilisation du site internet 
+            ou des produits achetés, sauf en cas de défaut avéré.
+        </p>
+
+        
+
+    </div>
+
+    <br>
+
+    <a href="{% url 'home' %}" class="btn btn-outline-success btn-lg">
+        <i class="fas fa-arrow-left me-2"></i> Catalogue
+    </a>
+
+</div>
+{% endblock %}

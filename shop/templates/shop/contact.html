@@ -1,0 +1,23 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="section-title text-center">Contactez-nous</h2>
+
+    <div class="mt-4 text-center">
+        <p>📍 Dakar, Sénégal</p>
+        <p>📞 76 252 42 96</p>
+        <p>📧 sengadget.sn@gmail.com</p>
+
+        <a href="https://wa.me/221762524296" class="btn btn-success btn-lg mt-3">
+            💬 Discuter sur WhatsApp
+        </a>
+    </div>
+    <br><br>
+    <a href="{% url 'home' %}" class="btn btn-outline-success btn-lg">
+        <i class="fas fa-arrow-left me-2"></i> Catalogue
+    </a>
+</div>
+
+
+{% endblock %}

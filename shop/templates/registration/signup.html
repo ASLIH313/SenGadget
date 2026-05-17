@@ -1,0 +1,56 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block content %}
+    <style>
+        .auth-container {
+            max-width: 450px;
+            margin: 60px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+        .auth-container h2 { text-align: center; margin-bottom: 20px; }
+        .auth-container input { width:100%; padding:10px; margin-bottom:12px; border-radius:8px; border:1px solid #ddd; }
+        .auth-container button { width:100%; padding:12px; background:#0c5a2cd0; color:#fff; border:none; border-radius:8px; font-weight:600; }
+        .text-danger.small{ margin-top:-8px; display:block; }
+    </style>
+
+    <div class="auth-container">
+        <h2>Créer un compte</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <label>Email</label>
+            {{ form.email }}
+            {% if form.email.errors %}
+                <div class="text-danger small">{{ form.email.errors }}</div>
+            {% endif %}
+
+            <label>Mot de passe</label>
+            {{ form.password1 }}
+            {% if form.password1.errors %}
+                <div class="text-danger small">{{ form.password1.errors }}</div>
+            {% endif %}
+
+            <label>Confirmer le mot de passe</label>
+            {{ form.password2 }}
+            {% if form.password2.errors %}
+                <div class="text-danger small">{{ form.password2.errors }}</div>
+            {% endif %}
+
+            <button type="submit">S'inscrire</button>
+        </form>
+
+        <div class="auth-footer" style="text-align:center; margin-top:12px;">
+            <p>Déjà un compte ? <a href="{% url 'login' %}">Se connecter</a></p>
+        </div>
+    </div>
+{% endblock %}
+

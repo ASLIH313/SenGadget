@@ -1,0 +1,197 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <title>SenGadget</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+        <!--pour les polices -->  
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,700;0,800;1,700;1,800&display=swap" rel="stylesheet">
+        
+        <link rel="stylesheet" href="{% static 'shop/css/style.css' %}">
+
+    </head>
+
+    {% if messages %}
+    {% for message in messages %}
+        <div class="popup-message">
+        {{ message }}
+        </div>
+    {% endfor %}
+    {% endif %}
+
+    <body>
+
+        <!-- HEADER GLOBAL (NAV + HERO) -->
+        <header class="header-global">
+            
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <div class="container">
+
+                    <!-- LOGO -->
+                    <a href="/" class="logo navbar-brand">SenGadget 🇸🇳</a>
+
+                    <!-- BLOC DROITE (panier + toggler toujours visibles) -->
+                    <div class="d-flex align-items-center gap-3 order-lg-2">
+
+                        <!-- PANIER -->
+                        <div class="panier-container position-relative">
+                            <a href="{% url 'panier' %}" class="text-white">
+                                <i class="fas fa-shopping-cart fa-lg"></i>
+
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success">
+                                    {{ panier_count }}
+                                </span>
+                            </a>
+
+                            {% if panier_non_vide %}
+                            <div id="rappel-panier" class="rappel-panier">
+                                🛒 Pensez à valider votre panier
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- BOUTON MENU -->
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+
+                    <!-- MENU -->
+                    <div class="collapse navbar-collapse" id="navMenu">
+                        <ul class="navbar-nav mx-lg-auto text-center">
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="/">Accueil</a>
+                            </li>
+                            {% if user.is_authenticated %}
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" href="{% url 'mon_compte' %}">Mon compte</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" href="/#produits">Produits</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" href="{% url 'a_propos' %}">À propos</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" href="{% url 'contact' %}">Contact</a>
+                                </li>
+                                <li class="nav-item">
+                                    <form action="{% url 'logout' %}" method="post" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="nav-link text-white logout-btn">Déconnexion</button>
+                                    </form>
+                                </li>
+                            {% else %}
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" href="/#produits">Produits</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" href="{% url 'a_propos' %}">À propos</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" href="{% url 'contact' %}">Contact</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" href="{% url 'login' %}" >Se connecter</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" href="{% url 'signup' %}">Créer un compte</a>
+                                </li>
+                            {% endif %}
+
+                            
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            {% block hero %}{% endblock %}
+
+        </header>
+
+        {% block content %}{% endblock %}
+
+
+        <footer id="contact" class="footer">
+            <div class="container">
+
+                <!-- LIGNE HAUTE -->
+                <div class="footer-top">
+                    <h4 class="logo">SenGadget 🇸🇳</h4>
+
+                    <div class="footer-socials">
+                        <a href="https://wa.me/221762524296" class="social wa" target="_blank">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        <a href="https://www.facebook.com/profile.php?id=61587879923911" target="_blank" class="social fb"><i class="fab fa-facebook-f"></i></a>
+                        
+                        <a href="https://www.instagram.com/sengadget221/" target="_blank" class="social ig"><i class="fab fa-instagram"></i></a>
+
+                        <a href="https://www.tiktok.com/@sengadget221" target="_blank" class="social tk"><i class="fab fa-tiktok"></i></a>
+                        
+                    </div>
+
+
+                </div>
+
+                <!-- LIGNE MILIEU -->
+                <div class="footer-bottom">
+                    <p>📍 Mbour, Sénégal</p>
+                    <p>📞 76 252 42 96</p>
+                    <p>📧 sengadget.sn@gmail.com</p>
+                </div>
+
+                <!-- LIGNE BAS -->
+                <div class="footer-legal">
+                    <a href="{% url 'mentions_legal' %}">Mentions légales</a>
+                    <span>|</span>
+                    <a href="{% url 'confidentialites' %}">Politique de confidentialité</a>
+                </div>
+                <div class="footer-copyright">
+                    <p>© <span id="year"></span> SenGadget. Tous droits réservés.</p>
+                </div>
+            </div>
+        </footer>
+        
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function(){
+
+                const rappel = document.getElementById("rappel-panier");
+
+                if(!rappel) return;
+
+                function afficherRappel(){
+                    rappel.style.display = "block";
+                    rappel.style.animation = "showAndHide 3.2s ease-in-out forwards";
+
+                    setTimeout(() => {
+                        rappel.style.display = "none";
+                    }, 3200);
+                }
+
+                // premier affichage
+                afficherRappel();
+
+                // réaffiche SEULEMENT si l'utilisateur est inactif 12s
+                let timer;
+                function resetTimer(){
+                    clearTimeout(timer);
+                    timer = setTimeout(afficherRappel, 12000);
+                }
+
+                document.addEventListener("mousemove", resetTimer);
+                document.addEventListener("keypress", resetTimer);
+                document.addEventListener("scroll", resetTimer);
+
+                resetTimer();
+            });
+        </script>
+    </body>

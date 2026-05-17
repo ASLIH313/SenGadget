@@ -1,0 +1,62 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="section-title text-center">Politique de Confidentialité </h2>
+    <br>
+                
+    <div class="mt-4" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif , Times, serif;">
+        <p>Chez <b>SenGadget</b>, la protection de vos données personnelles est une priorité.</p>
+
+        <p>
+            Lorsque vous passez une commande sur notre site, nous collectons certaines informations nécessaires au traitement de votre commande :
+
+            <li>Nom complet</li>
+
+           <li>Numéro de téléphone</li>
+
+            <li>Adresse de livraison</li>
+        </p>
+
+        <p>
+            Ces informations sont utilisées uniquement pour :
+       
+             <li>Confirmer votre commande</li>
+
+             <li>Assurer la livraison</li>
+
+             <li>Vous contacter en cas de besoin</li>
+        </p>
+
+        <p>
+            <b>Nous ne vendons, n’échangeons ni ne partageons vos données avec des tiers.</b>
+        </p>
+
+        <p>
+            Vos informations sont conservées de manière sécurisée et ne sont accessibles qu’à l’équipe <b>SenGadget</b>.
+        </p>
+
+        <b>Durée de conservation</b>
+        <p>Les données sont conservées uniquement le temps nécessaire au traitement des commandes et au suivi client.</p>
+
+        <b>Sécurité</b>
+        <p>Nous mettons en place des mesures de sécurité techniques pour protéger vos informations contre tout accès non autorisé.</p>
+
+        <b>Vos droits</b>
+        <p>Vous pouvez à tout moment demander la modification ou la suppression de vos informations en nous contactant à :
+        sengadget.sn@gmail.com</p>
+        
+
+    </div>
+
+
+
+
+    <br>
+
+    <a href="{% url 'home' %}" class="btn btn-outline-success btn-lg">
+        <i class="fas fa-arrow-left me-2"></i> Catalogue
+    </a>
+
+</div>
+{% endblock %}

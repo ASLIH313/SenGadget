@@ -1,0 +1,61 @@
+{% extends 'shop/base.html' %}
+
+    {% block hero %}
+        <div class="hero">
+            <h1>Bienvenue  chez SenGadget 🇸🇳</h1>
+            <p>Accessoires Téléphones & Gadgets Utiles</p>
+            <a href="#produits" class="btn btn-success">
+                Découvrir Nos Produits
+            </a>
+        </div>
+    {% endblock %}
+
+    {% block content %}
+
+        <!-- PRODUITS -->
+        <div class="container" id="produits">
+            <h2 class="section-title">Nos Produits Populaires</h2>
+
+            <div class="row g-4">
+                {% for product in products %}
+                <div class="col-6 col-md-4 col-lg-3 d-flex">
+                    <a href="{% url 'detail_produit' product.id %}" class="text-decoration-none text-dark">
+                        <div class="card-product">
+                            {% if product.image %}
+                            <img src="{{ product.image.url }}" class="product-img">
+                            {% endif %}
+
+                            <div class="p-3">
+                                <h6>{{ product.name }}</h6>
+                                <p class="price">{{ product.price }} FCFA</p>
+                                <a href="{% url 'ajouter_au_panier' product.id %}" class="btn btn-success btn-sm">
+                                    Ajouter au panier
+                                </a>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+
+        <!-- SECTION NOUS FAIRE CONFIANCE -->
+        <div class="container mb-5" id="confiance">
+            <h2 class="section-title text-center mb-5">Pourquoi nous faire confiance ?</h2>
+            <div class="row text-center list">
+                {% for item in confiance_list %}
+                <div class="col-6 col-sm-6 col-md-3 mb-4">
+                    <div class="card-confiance p-3 h-100">
+                        <i class="fas {{ item.icone }} fa-3x mb-3" style="color:#0c5a2cd0;"></i>
+                        <h5>{{ item.titre }}</h5>
+                        <p class="text-muted">{{ item.description }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+     
+    {% endblock %}
+    
+    

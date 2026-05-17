@@ -1,0 +1,266 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Dashboard SenGadget</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <style>
+            body { background:#f5f6fa; }
+
+            .stat-card {
+                border: none;
+                border-radius: 15px;
+            }
+
+            .table-responsive {
+                overflow-x: auto;
+            }
+
+            .badge-produit {
+                font-size: 12px;
+            }
+
+            .actions a {
+                margin-bottom: 5px;
+                display: block;
+            }
+
+            @media (min-width:768px){
+                .actions a {
+                    display:inline-block;
+                    margin-right:5px;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <div class="container py-4">
+
+            <h3 class="mb-4">📊 Dashboard SenGadget</h3>
+
+            <!-- STATS -->
+            <div class="row g-3 mb-4 text-center">
+                <div class="col-12 col-md-4">
+                    <div class="card stat-card shadow p-3">
+                        <h6>Total ventes</h6>
+                        <h2 class="text-success">{{ total_ventes }} FCFA</h2>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="card stat-card shadow p-3">
+                        <h6>Commandes totales</h6>
+                        <h2>{{ nombre_commandes }}</h2>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="card stat-card shadow p-3">
+                        <h6>Ventes du jour</h6>
+                        <h2>{{ ventes_du_jour }}</h2>
+                    </div>
+                </div>
+            </div>
+
+            <!--BARRE DE RECHERCHE-->
+            <form method="get" class="row g-2 mb-3">
+                    <div class="col-md-3">
+                        <select name="statut" class="form-select">
+                            <option value="">Tous les statuts</option>
+                            <option value="en_attente">En attente</option>
+                            <option value="confirmee">Confirmée</option>
+                            <option value="livree">Livrée</option>
+                            <option value="annulee">Annulée</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <input type="date" name="date" class="form-control">
+                    </div>
+
+                    <div class="col-md-3">
+                        <input type="text" name="telephone" placeholder="Téléphone client" class="form-control">
+                    </div>
+
+                    <div class="col-md-3">
+                        <button class="btn btn-dark w-100">Filtrer</button>
+                    </div>
+            </form>
+            <!-- TABLE COMMANDES -->
+            <div class="card shadow p-3 mb-4">
+                <h5 class="mb-3">📦 Gestion des commandes</h5>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover text-center align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Client</th>
+                                <th>Téléphone</th>
+                                <th>Produits</th>  
+                                <th>Montant</th>
+                                <th>Statut</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                                <th>Détail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for c in commandes %}
+                            <tr>
+                                <td>{{ c.nom_complet }}</td>
+                                <td>{{ c.telephone }}</td>
+
+                                <td>
+                                    {% for item in c.elementcommande_set.all %}
+                                        <span class="badge bg-secondary badge-produit">
+                                            🔹{{ item.produit.name }}
+                                        </span><br>
+                                    {% empty %}
+                                        Aucun produit
+                                    {% endfor %}
+                                </td>
+
+                                <td><strong>{{ c.montant_total }} FCFA</strong></td>
+
+                                <td>
+                                    <span class="badge bg-info">{{ c.statut }}</span>
+                                </td>
+
+                                <td>{{ c.date_commande|date:"d/m/Y H:i" }}</td>
+
+                                <td class="actions">
+                                    <a href="{% url 'changer_statut' c.id 'confirmee' %}" class="btn btn-warning btn-sm">Confirmer</a>
+                                    <a href="{% url 'changer_statut' c.id 'livree' %}" class="btn btn-success btn-sm">Livrer</a>
+                                    <a href="{% url 'changer_statut' c.id 'annulee' %}" class="btn btn-danger btn-sm">Annuler</a>
+                                </td>
+
+                                <td>
+                                    <a href="{% url 'detail_commande' c.id %}" class="btn btn-dark btn-sm">Voir</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TOP PRODUITS -->
+            <div class="card shadow p-3 mb-4">
+                <h5 class="text-center mb-3">🔥 Top 5 Produits les plus vendus</h5>
+
+                {% if top_produits %}
+                <div class="table-responsive">
+                    <table class="table table-striped text-center">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Produit</th>
+                                <th>Unités vendues</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for p in top_produits %}
+                            <tr>
+                                <td><strong>{{ forloop.counter }}</strong></td>
+                                <td>{{ p.produit__name }}</td>
+                                <td class="text-success"><strong>{{ p.total_vendu }}</strong></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                    <p class="text-center">Aucune vente livrée pour le moment</p>
+                {% endif %}
+            </div>
+
+            <!-- RECAP MENSUEL -->
+            <div class="card shadow mt-5">
+                <div class="card-body">
+                    <h4 class="text-center mb-4">📅 Récapitulatif du mois</h4>
+
+                    <div class="row text-center">
+
+                        <div class="col-md-3 col-6 mb-3">
+                            <div class="p-3 border rounded">
+                                <h6>💰 Chiffre du mois</h6>
+                                <h4 class="text-success">{{ ca_mois }} FCFA</h4>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 col-6 mb-3">
+                            <div class="p-3 border rounded">
+                                <h6>📦 Commandes livrées</h6>
+                                <h4>{{ commandes_mois }}</h4>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 col-6 mb-3">
+                            <div class="p-3 border rounded">
+                                <h6>🥇 Top produit</h6>
+                                <h6>
+                                    {% if top_mois %}
+                                        {{ top_mois.produit__name }}
+                                        . Nombre : <b>{{ top_mois.total_vendu }}</b>
+                                    {% else %}
+                                        Aucun
+                                    {% endif %}
+                                </h6>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 col-6 mb-3">
+                            <div class="p-3 border rounded">
+                                <h6>📈 Évolution</h6>
+                                <h4 class="{% if evolution >= 0 %}text-success{% else %}text-danger{% endif %}">
+                                    {{ evolution }} %
+                                </h4>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- GRAPHIQUE -->
+            <div class="card shadow p-4 mt-5">
+                <h4>📈 Ventes</h4>
+                <canvas id="salesChart"></canvas>
+            </div>
+
+        </div>
+
+        {{ dates|json_script:"dates-data" }}
+        {{ ventes_par_jour|json_script:"ventes-data" }}
+
+        <script>
+            const dates = JSON.parse(document.getElementById('dates-data').textContent);
+            const ventes = JSON.parse(document.getElementById('ventes-data').textContent);
+
+            const ctx = document.getElementById('salesChart');
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'Ventes des 7 derniers jours (FCFA)',
+                        data: ventes,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>
