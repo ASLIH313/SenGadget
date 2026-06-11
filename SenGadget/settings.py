@@ -28,7 +28,10 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv(
 
 LOGOUT_REDIRECT_URL = 'home'
 LOGIN_REDIRECT_URL = 'mon_compte'
-AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend',]
+AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesStandaloneBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 
 
@@ -43,6 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #'shop',
     'shop.apps.ShopConfig',
+    'axes',
+
 ]
 
 
@@ -55,6 +60,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'axes.middleware.AxesMiddleware',
+
 ]
 
 ROOT_URLCONF = 'SenGadget.urls'
@@ -143,3 +150,9 @@ if EMAIL_HOST_PASSWORD:
     DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# ─── Protection brute-force login ─────────────────────────────────────────────
+AXES_FAILURE_LIMIT = 5          # 5 tentatives max
+AXES_COOLOFF_TIME = 1           # bloqué 1 heure
+AXES_LOCKOUT_PARAMETERS = ['ip_address']  # bloquer par IP
+AXES_RESET_ON_SUCCESS = True    # réinitialise le compteur si login réussi

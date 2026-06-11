@@ -34,21 +34,21 @@ class TestPanier(TestCase):
     # ─── Panier ───────────────────────────────────────────────────────────────
 
     def test_ajouter_produit_au_panier(self):
-        self.client.login(username='testuser', password='testpass123')
+        self.client.force_login(self.user)
         response = self.client.get(f'/ajouter/{self.produit.id}/')
         self.assertEqual(response.status_code, 302)
         panier = Panier.objects.get(user=self.user)
         self.assertEqual(panier.elementpanier_set.count(), 1)
 
     def test_produit_hors_stock_bloque(self):
-        self.client.login(username='testuser', password='testpass123')
+        self.client.force_login(self.user)
         self.client.get(f'/ajouter/{self.produit_hors_stock.id}/')
         panier = Panier.objects.filter(user=self.user).first()
         if panier:
             self.assertEqual(panier.elementpanier_set.count(), 0)
 
     def test_produit_inexistant_renvoie_404(self):
-        self.client.login(username='testuser', password='testpass123')
+        self.client.force_login(self.user)
         response = self.client.get('/ajouter/99999/')
         self.assertEqual(response.status_code, 404)
 
@@ -56,7 +56,7 @@ class TestPanier(TestCase):
     # ─── Commande ─────────────────────────────────────────────────────────────
 
     def test_valider_commande(self):
-        self.client.login(username='testuser', password='testpass123')
+        self.client.force_login(self.user)
         self.client.get(f'/ajouter/{self.produit.id}/')
         response = self.client.post('/commande/valider/', {
             'nom': 'Aslih Test',
@@ -67,7 +67,7 @@ class TestPanier(TestCase):
         self.assertEqual(Commande.objects.filter(user=self.user).count(), 1)
 
     def test_commande_panier_vide_redirige(self):
-        self.client.login(username='testuser', password='testpass123')
+        self.client.force_login(self.user)
         response = self.client.post('/commande/valider/', {
             'nom': 'Aslih Test',
             'telephone': '771234567',
@@ -111,14 +111,14 @@ class TestPanier(TestCase):
         self.assertEqual(response.status_code, 302)
 
     def test_dashboard_interdit_client_normal(self):
-        self.client.login(username='testuser', password='testpass123')
+        self.client.force_login(self.user)
         response = self.client.get('/dashboard/')
         self.assertEqual(response.status_code, 302)
 
     def test_dashboard_accessible_staff(self):
         self.user.is_staff = True
         self.user.save()
-        self.client.login(username='testuser', password='testpass123')
+        self.client.force_login(self.user)
         response = self.client.get('/dashboard/')
         self.assertEqual(response.status_code, 200)
 
