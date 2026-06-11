@@ -11,6 +11,7 @@ from django.db import transaction
 from datetime import timedelta
 from django.contrib.auth import login
 from .forms import InscriptionForm
+from django.core.paginator import Paginator
 
 # ─── Utilitaire panier ────────────────────────────────────────────────────────
 
@@ -73,6 +74,11 @@ def home(request):
 
     confiance_list = Confiance.objects.all()
 
+    # Pagination — 12 produits par page
+    paginator = Paginator(products, 12)
+    page_number = request.GET.get('page')
+    products = paginator.get_page(page_number)
+    
     return render(request, 'shop/index.html', {
         'products': products,
         'categories': categories,

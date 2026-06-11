@@ -712,3 +712,39 @@
 
 
 
+/* ===== OVERRIDE VERT BOOTSTRAP ===== */
+.btn-success {
+    background-color: #0c5a2c !important;
+    border-color: #0c5a2c !important;
+}
+
+.btn-success:hover,
+.btn-success:focus,
+.btn-success:active {
+    background-color: #094a24 !important;
+    border-color: #094a24 !important;
+}
+
+.btn-outline-success {
+    color: #0c5a2c !important;
+    border-color: #0c5a2c !important;
+}
+
+.btn-outline-success:hover {
+    background-color: #0c5a2c !important;
+    color: white !important;
+}
+
+.page-link {
+    color: #0c5a2c !important;
+}
+
+.page-item.active .page-link {
+    background-color: #0c5a2c !important;
+    border-color: #0c5a2c !important;
+    color: white !important;
+}
+
+.badge.bg-success {
+    background-color: #0c5a2c !important;
+}
