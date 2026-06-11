@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from PIL import Image as PilImage
+import os
 
 #le model categorie pour classer les produits en fonction de leur type
 class Categorie(models.Model):
@@ -32,6 +33,24 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        if self.image:
+            img_path = self.image.path
+            img = PilImage.open(img_path)
+
+            # Convertir en RGB si nécessaire (PNG avec transparence etc.)
+            if img.mode in ('RGBA', 'P'):
+                img = img.convert('RGB')
+
+            # Redimensionner si trop grande (max 800x800)
+            max_size = (800, 800)
+            img.thumbnail(max_size, PilImage.LANCZOS)
+
+            # Sauvegarder avec compression (qualité 75%)
+            img.save(img_path, format='JPEG', quality=75, optimize=True)
     
 
 
@@ -151,3 +170,6 @@ class Confiance(models.Model):
 
     def __str__(self):
         return self.titre
+    
+
+

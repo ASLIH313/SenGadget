@@ -3,17 +3,6 @@ from .models import Product, Panier, ElementPanier, Commande, ElementCommande, C
 from django.utils.text import slugify
 
 
-# permettre a admiin d'ajouter ces produits
-admin.site.register(Product)
-admin.site.register(Panier)
-admin.site.register(ElementPanier)
-admin.site.register(Commande)
-admin.site.register(ElementCommande)
-admin.site.register(Commentaire)
-admin.site.register(Confiance)
-admin.site.register(Categorie)
-
-
 @admin.register(Categorie)
 class CategorieAdmin(admin.ModelAdmin):
     list_display = ('nom', 'slug')
@@ -23,3 +12,41 @@ class CategorieAdmin(admin.ModelAdmin):
         if not obj.slug:
             obj.slug = slugify(obj.nom)
         super().save_model(request, obj, form, change)
+
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('name', 'price', 'stock', 'categorie')
+    list_filter = ('categorie',)
+    search_fields = ('name',)
+    list_editable = ('price', 'stock')
+
+
+@admin.register(Commande)
+class CommandeAdmin(admin.ModelAdmin):
+    list_display = ('nom_complet', 'telephone', 'montant_total', 'statut', 'date_commande')
+    list_filter = ('statut', 'date_commande')
+    search_fields = ('nom_complet', 'telephone')
+    ordering = ('-date_commande',)
+
+
+@admin.register(ElementCommande)
+class ElementCommandeAdmin(admin.ModelAdmin):
+    list_display = ('commande', 'produit', 'quantite', 'prix')
+
+
+@admin.register(Commentaire)
+class CommentaireAdmin(admin.ModelAdmin):
+    list_display = ('nom', 'produit', 'note', 'actif', 'date')
+    list_filter = ('actif', 'note')
+    list_editable = ('actif',)
+    search_fields = ('nom', 'commentaire')
+
+
+@admin.register(Confiance)
+class ConfianceAdmin(admin.ModelAdmin):
+    list_display = ('titre', 'icone')
+
+
+admin.site.register(Panier)
+admin.site.register(ElementPanier)
