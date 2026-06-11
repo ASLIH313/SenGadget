@@ -57,7 +57,7 @@ def get_panier(request):
 # ─── Pages publiques ──────────────────────────────────────────────────────────
 
 def home(request):
-    products = Product.objects.all()
+    products = Product.objects.all().order_by('-id')
     categories = Categorie.objects.all()
 
     recherche = request.GET.get('q')

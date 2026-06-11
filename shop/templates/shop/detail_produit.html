@@ -7,8 +7,9 @@
             <!-- IMAGE PRODUIT -->
             <div class="col-md-6 text-center">
                 <div class="detail-img-wrapper">
-                    <img src="{{ produit.image.url }}" class="detail-img zoomable" onclick="openImage(this.src)">
-
+                    {% if produit.image %}
+                        <img src="{{ produit.image.url }}" class="detail-img zoomable" onclick="openImage(this.src)">
+                    {% endif %}
                 </div>
             </div>
 
