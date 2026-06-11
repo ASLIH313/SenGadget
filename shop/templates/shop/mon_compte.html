@@ -1,76 +1,116 @@
 {% extends 'shop/base.html' %}
 
 {% block content %}
-
-<div style="max-width: 900px; margin: auto; padding: 20px;">
+<div style="max-width: 900px; margin: auto; padding: 30px 20px;">
 
     <!-- Header client -->
-    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 25px;">
-        <h2 style="margin: 0;">
-            Bonjour 
-            {% if user.first_name %}
-                {{ user.first_name }}
-            {% else %}
-                {{ user.username }}
-            {% endif %}
-            👋
+    <div style="background: white; padding: 24px; border-radius: 16px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.06);">
+        <h2 style="margin: 0; font-weight: 700;">
+            Bonjour {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %} 👋
         </h2>
-        <p style="color: gray; margin-top: 5px;">
+        <p style="color: gray; margin-top: 5px; margin-bottom: 0;">
             Bienvenue dans votre espace personnel SenGadget.
         </p>
     </div>
 
     <!-- Section commandes -->
-    <h3 style="margin-bottom: 20px;">📦 Mes commandes</h3>
+    <h3 style="margin-bottom: 20px; font-weight: 700;">📦 Mes commandes</h3>
 
     {% for commande in commandes %}
-        <div style="
-            background: white;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            border-left: 5px solid #0d6efd;
-        ">
-            <p>Date : {{ commande.date_commande|date:"d M Y" }}</p>
-            <p>
-                Statut : 
-                {% if commande.statut == "Livrée" %}
-                    <span style="color: green; font-weight: bold;">{{ commande.statut }}</span>
-                {% elif commande.statut == "En attente" %}
-                    <span style="color: orange; font-weight: bold;">{{ commande.statut }}</span>
-                {% else %}
-                    <span style="color: red; font-weight: bold;">{{ commande.statut }}</span>
-                {% endif %}
-            </p>
-            <p>Total : <strong>{{ commande.montant_total }} FCFA</strong></p>
+    <div style="background: white; padding: 24px; margin-bottom: 20px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.06);">
 
-            <p><strong>Produits :</strong></p>
-              <ul>
-                  {% for element in commande.elementcommande_set.all %}
-                      <li>
-                          {{ element.produit.name }} × {{ element.quantite }}
-                      </li>
-                  {% endfor %}
-              </ul>
+        <!-- En-tête commande -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+            <div>
+                <p style="margin: 0; font-size: 13px; color: gray;">Commande du {{ commande.date_commande|date:"d M Y" }}</p>
+                <p style="margin: 0; font-weight: 700; font-size: 18px;">{{ commande.montant_total }} FCFA</p>
+            </div>
 
-
+            <!-- Badge statut -->
+            {% if commande.statut == 'livree' %}
+                <span style="background: #e8f5ee; color: #0c5a2c; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;">✅ Livrée</span>
+            {% elif commande.statut == 'confirmee' %}
+                <span style="background: #e3f2fd; color: #1565c0; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;">📞 Confirmée</span>
+            {% elif commande.statut == 'attente' %}
+                <span style="background: #fff8e1; color: #f57f17; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;">⏳ En attente</span>
+            {% elif commande.statut == 'annulee' %}
+                <span style="background: #fce4ec; color: #c62828; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;">❌ Annulée</span>
+            {% elif commande.statut == 'refusee' %}
+                <span style="background: #fce4ec; color: #c62828; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;">🚫 Refusée</span>
+            {% endif %}
         </div>
+
+        <!-- Barre de progression -->
+        {% if commande.statut != 'annulee' and commande.statut != 'refusee' %}
+        <div style="margin-bottom: 24px;">
+            <div style="display: flex; justify-content: space-between; position: relative; margin-bottom: 8px;">
+
+                <!-- Ligne de fond -->
+                <div style="position: absolute; top: 14px; left: 0; right: 0; height: 3px; background: #e0e0e0; z-index: 0;"></div>
+
+                <!-- Ligne de progression -->
+                <div style="position: absolute; top: 14px; left: 0; height: 3px; background: #0c5a2c; z-index: 1;
+                    width: {% if commande.statut == 'attente' %}0%{% elif commande.statut == 'confirmee' %}50%{% elif commande.statut == 'livree' %}100%{% endif %};
+                    transition: width 0.5s ease;"></div>
+
+                <!-- Étape 1 : En attente -->
+                <div style="display: flex; flex-direction: column; align-items: center; z-index: 2;">
+                    <div style="width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px;
+                        background: {% if commande.statut == 'attente' or commande.statut == 'confirmee' or commande.statut == 'livree' %}#0c5a2c{% else %}#e0e0e0{% endif %};
+                        color: white; font-weight: bold;">1</div>
+                    <span style="font-size: 11px; color: gray; margin-top: 6px; text-align: center;">En attente</span>
+                </div>
+
+                <!-- Étape 2 : Confirmée -->
+                <div style="display: flex; flex-direction: column; align-items: center; z-index: 2;">
+                    <div style="width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px;
+                        background: {% if commande.statut == 'confirmee' or commande.statut == 'livree' %}#0c5a2c{% else %}#e0e0e0{% endif %};
+                        color: white; font-weight: bold;">2</div>
+                    <span style="font-size: 11px; color: gray; margin-top: 6px; text-align: center;">Confirmée</span>
+                </div>
+
+                <!-- Étape 3 : Livrée -->
+                <div style="display: flex; flex-direction: column; align-items: center; z-index: 2;">
+                    <div style="width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px;
+                        background: {% if commande.statut == 'livree' %}#0c5a2c{% else %}#e0e0e0{% endif %};
+                        color: white; font-weight: bold;">3</div>
+                    <span style="font-size: 11px; color: gray; margin-top: 6px; text-align: center;">Livrée</span>
+                </div>
+
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Produits -->
+        <div style="border-top: 1px solid #f0f0f0; padding-top: 16px;">
+            <p style="font-weight: 600; margin-bottom: 10px; font-size: 14px;">Produits commandés :</p>
+            {% for element in commande.elementcommande_set.all %}
+            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f9f9f9; font-size: 14px;">
+                <span>{{ element.produit.name }} × {{ element.quantite }}</span>
+                <span style="font-weight: 600;">{{ element.sous_total }} FCFA</span>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
     {% empty %}
-        <div style="text-align: center; padding: 40px; background: #f8f9fa; border-radius: 10px;">
-            <p style="color: gray;">Aucune commande pour le moment.</p>
-        </div>
+    <div style="text-align: center; padding: 50px; background: white; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.06);">
+        <p style="font-size: 40px; margin-bottom: 10px;">📭</p>
+        <p style="color: gray;">Aucune commande pour le moment.</p>
+        <a href="{% url 'home' %}" class="btn btn-success mt-2">Voir nos produits</a>
+    </div>
     {% endfor %}
 
+    <!-- Boutons bas de page -->
+    <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px;">
+        <a href="https://wa.me/221762524296?text=Bonjour%20SenGadget,%20je%20voudrais%20des%20informations%20sur%20ma%20commande"
+           target="_blank" class="btn btn-success">
+            💬 Contacter sur WhatsApp
+        </a>
+        <a href="{% url 'home' %}" class="btn btn-outline-success">
+            <i class="fas fa-arrow-left me-2"></i> Voir nos produits
+        </a>
+    </div>
 
-    <a href="https://wa.me/221762524296?text=Bonjour%20SenGadget,%20je%20veux%20avoir%20des%20informations%20par%20raport%20à%20ma%20commande%20:%20" 
-        target="_blank" class="btn btn-success btn-lg mt-3">
-      💬 Nous contacter sur WhatsApp
-    </a>
-    <br> <br>
-    <a href="{% url 'home' %}" class="btn btn-outline-success btn-lg">
-        <i class="fas fa-arrow-left me-2"></i> Voir nos produits
-    </a>
 </div>
-
 {% endblock %}

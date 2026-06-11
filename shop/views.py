@@ -205,6 +205,46 @@ def envoyer_mail(message):
     )
 
 
+def envoyer_mail(message):
+    send_mail(
+        'Nouvelle commande SenGadget',
+        message,
+        'sengadget.sn@gmail.com',
+        ['sengadget.sn@gmail.com'],
+        fail_silently=True,
+    )
+
+def envoyer_confirmation_client(email_client, nom, elements_liste, total):
+        message = f"""
+    Bonjour {nom} 👋,
+
+    Merci pour votre commande sur SenGadget 🇸🇳 !
+
+    Voici votre récapitulatif :
+
+    """
+        for e in elements_liste:
+            message += f"  - {e.produit.name} x {e.quantite} = {e.produit.price * e.quantite} FCFA\n"
+
+        message += f"""
+    Total : {total} FCFA
+
+    Notre équipe vous contactera sous peu pour confirmer la livraison.
+    📞 76 252 42 96
+    📍 Mbour, Sénégal
+
+    Merci de nous faire confiance !
+    — L'équipe SenGadget 🇸🇳
+    """
+        send_mail(
+            '✅ Confirmation de votre commande SenGadget',
+            message,
+            'sengadget.sn@gmail.com',
+            [email_client],
+            fail_silently=True,
+        )
+
+
 @login_required
 def valider_commande(request):
     if request.method == 'POST':
@@ -255,6 +295,12 @@ Produits commandés :
         message += f"\nTotal: {total} FCFA"
 
         threading.Thread(target=envoyer_mail, args=(message,)).start()
+
+        if request.user.email:
+            threading.Thread(
+                target=envoyer_confirmation_client,
+                args=(request.user.email, nom, elements_liste, total)
+            ).start()
 
         messages.success(
             request,
