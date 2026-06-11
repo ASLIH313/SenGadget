@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from PIL import Image as PilImage
-import os
 
 #le model categorie pour classer les produits en fonction de leur type
 class Categorie(models.Model):

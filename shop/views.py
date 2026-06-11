@@ -201,14 +201,6 @@ def page_commande(request):
     return render(request, 'shop/commande.html')
 
 
-def envoyer_mail(message):
-    send_mail(
-        'Nouvelle commande SenGadget',
-        message,
-        'sengadget.sn@gmail.com',
-        ['sengadget.sn@gmail.com'],
-        fail_silently=True,
-    )
 
 
 def envoyer_mail(message):
