@@ -1,61 +1,122 @@
 {% extends 'shop/base.html' %}
 
-    {% block hero %}
-        <div class="hero">
-            <h1>Bienvenue  chez SenGadget 🇸🇳</h1>
-            <p>Accessoires Téléphones & Gadgets Utiles</p>
-            <a href="#produits" class="btn btn-success">
-                Découvrir Nos Produits
-            </a>
+{% block hero %}
+    <div class="hero">
+        <h1>Bienvenue chez SenGadget 🇸🇳</h1>
+        <p>Accessoires Téléphones & Gadgets Utiles</p>
+        <a href="#produits" class="btn btn-success">
+            Découvrir Nos Produits
+        </a>
+    </div>
+{% endblock %}
+
+{% block content %}
+
+    <!-- RECHERCHE + FILTRES (container séparé) -->
+    <div class="container mt-4">
+        <form method="GET" action="{% url 'home' %}">
+            <div class="d-flex gap-2 flex-wrap align-items-center">
+                <input
+                    type="text"
+                    name="q"
+                    value="{{ recherche|default:'' }}"
+                    placeholder="🔍 Rechercher un produit..."
+                    class="form-control"
+                    style="max-width: 300px;"
+                >
+                <button type="submit" class="btn btn-success">Rechercher</button>
+                {% if recherche or categorie_active %}
+                    <a href="{% url 'home' %}" class="btn btn-outline-secondary">Réinitialiser</a>
+                {% endif %}
+            </div>
+
+            {% if categories %}
+            <div class="d-flex gap-2 flex-wrap mt-3">
+                <a href="{% url 'home' %}{% if recherche %}?q={{ recherche }}{% endif %}"
+                   class="btn btn-sm {% if not categorie_active %}btn-success{% else %}btn-outline-success{% endif %}">
+                    Tous
+                </a>
+                {% for cat in categories %}
+                <a href="?categorie={{ cat.slug }}{% if recherche %}&q={{ recherche }}{% endif %}"
+                   class="btn btn-sm {% if categorie_active == cat.slug %}btn-success{% else %}btn-outline-success{% endif %}">
+                    {{ cat.nom }}
+                </a>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- PRODUITS (container full-width) -->
+    <div class="container-fluid px-4 mt-2" id="produits">
+
+        <h2 class="section-title">
+            {% if recherche %}
+                Résultats pour "{{ recherche }}"
+            {% elif categorie_active %}
+                {{ categorie_active|capfirst }}
+            {% else %}
+                Nos Produits Populaires
+            {% endif %}
+        </h2>
+
+        {% if not products %}
+        <div class="text-center py-5">
+            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+            <p class="text-muted">Aucun produit trouvé.</p>
+            <a href="{% url 'home' %}" class="btn btn-success mt-2">Voir tous les produits</a>
         </div>
-    {% endblock %}
+        {% endif %}
 
-    {% block content %}
+        <div class="row g-3">
+            {% for product in products %}
+            <div class="col-6 col-md-3">
+                <a href="{% url 'detail_produit' product.id %}" class="text-decoration-none text-dark">
+                    <div class="card-product">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        {% endif %}
 
-        <!-- PRODUITS -->
-        <div class="container" id="produits">
-            <h2 class="section-title">Nos Produits Populaires</h2>
+                        {% if product.categorie %}
+                        <span class="badge-categorie">{{ product.categorie.nom }}</span>
+                        {% endif %}
 
-            <div class="row g-4">
-                {% for product in products %}
-                <div class="col-6 col-md-4 col-lg-3 d-flex">
-                    <a href="{% url 'detail_produit' product.id %}" class="text-decoration-none text-dark">
-                        <div class="card-product">
-                            {% if product.image %}
-                            <img src="{{ product.image.url }}" class="product-img">
+                        <div class="p-3">
+                            <h6>{{ product.name }}</h6>
+                            <p class="price">{{ product.price }} FCFA</p>
+                            {% if product.stock > 0 %}
+                            <a href="{% url 'ajouter_au_panier' product.id %}" 
+                               class="btn btn-success btn-sm w-100"
+                               onclick="event.stopPropagation()">
+                                Ajouter au panier
+                            </a>
+                            {% else %}
+                            <button class="btn btn-secondary btn-sm w-100" disabled>
+                                Rupture de stock
+                            </button>
                             {% endif %}
-
-                            <div class="p-3">
-                                <h6>{{ product.name }}</h6>
-                                <p class="price">{{ product.price }} FCFA</p>
-                                <a href="{% url 'ajouter_au_panier' product.id %}" class="btn btn-success btn-sm">
-                                    Ajouter au panier
-                                </a>
-                            </div>
                         </div>
-                    </a>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-
-
-        <!-- SECTION NOUS FAIRE CONFIANCE -->
-        <div class="container mb-5" id="confiance">
-            <h2 class="section-title text-center mb-5">Pourquoi nous faire confiance ?</h2>
-            <div class="row text-center list">
-                {% for item in confiance_list %}
-                <div class="col-6 col-sm-6 col-md-3 mb-4">
-                    <div class="card-confiance p-3 h-100">
-                        <i class="fas {{ item.icone }} fa-3x mb-3" style="color:#0c5a2cd0;"></i>
-                        <h5>{{ item.titre }}</h5>
-                        <p class="text-muted">{{ item.description }}</p>
                     </div>
-                </div>
-                {% endfor %}
+                </a>
             </div>
+            {% endfor %}
         </div>
-     
-    {% endblock %}
-    
-    
+    </div>
+
+    <!-- SECTION CONFIANCE -->
+    <div class="container mb-5 mt-5" id="confiance">
+        <h2 class="section-title text-center mb-5">Pourquoi nous faire confiance ?</h2>
+        <div class="row text-center list">
+            {% for item in confiance_list %}
+            <div class="col-6 col-sm-6 col-md-3 mb-4">
+                <div class="card-confiance p-3 h-100">
+                    <i class="fas {{ item.icone }} fa-3x mb-3" style="color:#0c5a2cd0;"></i>
+                    <h5>{{ item.titre }}</h5>
+                    <p class="text-muted">{{ item.description }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}

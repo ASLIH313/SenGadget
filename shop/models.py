@@ -2,16 +2,38 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-#le model produit 
+#le model categorie pour classer les produits en fonction de leur type
+class Categorie(models.Model):
+    nom = models.CharField(max_length=100)
+    slug = models.SlugField(unique=True)
+
+    def __str__(self):
+        return self.nom
+
+    class Meta:
+        verbose_name = "Catégorie"
+        verbose_name_plural = "Catégories"
+
+#le model produit stocke les infos de chaque produit et la categorie a laquelle il appartient
 class Product(models.Model):
     name = models.CharField(max_length=100)
     price = models.PositiveIntegerField()
     description = models.TextField()
     image = models.ImageField(upload_to='products/', null=True, blank=True)
-    stock = models.PositiveIntegerField(default=0) 
-    
+    stock = models.PositiveIntegerField(default=0)
+    # NOUVEAU
+    categorie = models.ForeignKey(
+        Categorie,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='produits'
+    )
+
     def __str__(self):
         return self.name
+    
+
 
 
 

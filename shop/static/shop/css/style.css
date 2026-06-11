@@ -577,6 +577,8 @@
                         height: 180px;
                     }
 
+                    
+
                     .footer-top{
                         flex-direction: column;
                         gap: 20px;
@@ -708,4 +710,5 @@
                 100%{opacity:0; transform: translateY(-20px);}
             }
 
-            
+
+

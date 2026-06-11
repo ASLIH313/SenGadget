@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Product, Panier, ElementPanier, Commande, ElementCommande, Commentaire, Confiance
 from django.core.mail import send_mail
 from django.contrib import messages
 import threading
-from django.db.models import Avg, Sum, Prefetch
+from django.db.models import Avg, Sum, Prefetch, Q
+from .models import Product, Panier, ElementPanier, Commande, ElementCommande, Commentaire, Confiance, Categorie
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.contrib.admin.views.decorators import staff_member_required
@@ -11,7 +11,6 @@ from django.db import transaction
 from datetime import timedelta
 from django.contrib.auth import login
 from .forms import InscriptionForm
-
 
 # ─── Utilitaire panier ────────────────────────────────────────────────────────
 
@@ -58,12 +57,29 @@ def get_panier(request):
 
 def home(request):
     products = Product.objects.all()
+    categories = Categorie.objects.all()
+
+    recherche = request.GET.get('q')
+    categorie_slug = request.GET.get('categorie')
+
+    if recherche:
+        products = products.filter(
+            Q(name__icontains=recherche) |
+            Q(description__icontains=recherche)
+        )
+
+    if categorie_slug:
+        products = products.filter(categorie__slug=categorie_slug)
+
     confiance_list = Confiance.objects.all()
+
     return render(request, 'shop/index.html', {
         'products': products,
+        'categories': categories,
+        'recherche': recherche,
+        'categorie_active': categorie_slug,
         'confiance_list': confiance_list,
     })
-
 
 def panier(request):
     panier = get_panier(request)
