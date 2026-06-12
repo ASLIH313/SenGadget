@@ -4,12 +4,37 @@
     <div class="container mt-5">
         <div class="row align-items-center g-5">
 
-            <!-- IMAGE PRODUIT -->
+            <!-- IMAGE PRODUIT avec carousel -->
             <div class="col-md-6 text-center">
                 <div class="detail-img-wrapper">
-                    {% if produit.image %}
-                        <img src="{{ produit.image.url }}" class="detail-img zoomable" onclick="openImage(this.src)">
+
+                    {% if produit.photos.all %}
+
+                    <!-- Image principale affichée -->
+                    <img id="img-principale"
+                        src="{{ produit.photos.first.image.url }}"
+                        class="detail-img zoomable"
+                        onclick="openImage(this.src)">
+
+                    <!-- Miniatures -->
+                    {% if produit.photos.count > 1 %}
+                    <div class="d-flex justify-content-center gap-2 mt-3 flex-wrap">
+                        {% for photo in produit.photos.all %}
+                        <img src="{{ photo.image.url }}"
+                            class="miniature {% if forloop.first %}active{% endif %}"
+                            onclick="changerPhoto(this)"
+                            alt="Photo {{ forloop.counter }}">
+                        {% endfor %}
+                    </div>
                     {% endif %}
+
+                    {% elif produit.image %}
+                    <!-- Fallback image principale si pas de photos multiples -->
+                    <img src="{{ produit.image.url }}"
+                        class="detail-img zoomable"
+                        onclick="openImage(this.src)">
+                    {% endif %}
+
                 </div>
             </div>
 
@@ -131,6 +156,7 @@
 
     </div>
 
+    
     <!-- LIGHTBOX IMAGE -->
     <div id="imageModal" class="image-modal" onclick="closeImage()">
         <img id="modalImg">
@@ -148,7 +174,18 @@
         function closeImage(){
             document.getElementById("imageModal").style.display = "none";
         }
-        </script>
+
+        function changerPhoto(miniature) {
+            // Mettre à jour l'image principale
+            document.getElementById('img-principale').src = miniature.src;
+
+            // Retirer active de toutes les miniatures
+            document.querySelectorAll('.miniature').forEach(m => m.classList.remove('active'));
+
+            // Ajouter active à la miniature cliquée
+            miniature.classList.add('active');
+        }
+    </script>
 
 {% endblock %}
 

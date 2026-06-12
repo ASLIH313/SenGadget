@@ -748,3 +748,26 @@
 .badge.bg-success {
     background-color: #0c5a2c !important;
 }
+
+/* ===== MINIATURES DETAIL PRODUIT ===== */
+.miniature {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 10px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+    opacity: 0.6;
+}
+
+.miniature:hover {
+    opacity: 1;
+    border-color: #0c5a2c;
+}
+
+.miniature.active {
+    opacity: 1;
+    border-color: #0c5a2c;
+    box-shadow: 0 0 0 2px #0c5a2cd0;
+}

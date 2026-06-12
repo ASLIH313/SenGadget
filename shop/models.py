@@ -52,7 +52,21 @@ class Product(models.Model):
             img.save(img_path, format='JPEG', quality=75, optimize=True)
     
 
+#le model photo produit pour stocker plusieurs photos pour un meme produit et les ordonner
+class PhotoProduit(models.Model):
+    produit = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name='photos'
+    )
+    image = models.ImageField(upload_to='products/')
+    ordre = models.PositiveIntegerField(default=0)
 
+    class Meta:
+        ordering = ['ordre']
+
+    def __str__(self):
+        return f"Photo {self.ordre} — {self.produit.name}"
 
 
 #le model panier appartient a un visiteur meme sil na pas de compte 

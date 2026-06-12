@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, Panier, ElementPanier, Commande, ElementCommande, Commentaire, Confiance, Categorie
+from .models import Product, Panier, ElementPanier, Commande, ElementCommande, Commentaire, Confiance, Categorie,PhotoProduit
 from django.utils.text import slugify
 
 
@@ -14,13 +14,19 @@ class CategorieAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
 
 
+class PhotoProduitInline(admin.TabularInline):
+    model = PhotoProduit
+    extra = 3
+    fields = ('image', 'ordre')
+
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'price', 'stock', 'categorie')
     list_filter = ('categorie',)
     search_fields = ('name',)
     list_editable = ('price', 'stock')
-
+    inlines = [PhotoProduitInline]  # ← ajouter cette ligne
 
 @admin.register(Commande)
 class CommandeAdmin(admin.ModelAdmin):
@@ -50,3 +56,5 @@ class ConfianceAdmin(admin.ModelAdmin):
 
 admin.site.register(Panier)
 admin.site.register(ElementPanier)
+
+
